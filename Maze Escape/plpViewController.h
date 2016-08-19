@@ -29,6 +29,7 @@
 {
     SKScene * myScene;
     BOOL gamePaused;
+    BOOL runningOniPad;
 }
 
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
@@ -38,6 +39,7 @@
 @property (weak, nonatomic) IBOutlet UITextView *creditsText;
 @property (nonatomic, strong) IBOutlet UIImageView *MenuBackground;
 
-- (void)addButton;
+-(void)saveCurrentProgress;
+
 
 @end

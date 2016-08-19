@@ -2,17 +2,29 @@
 
 Open-Source iOS game “Edgar The Explorer”.
 
+[![Youtube Demo](Edgar_Preview_.png)](https://www.youtube.com/watch?v=lmzz6sqzB70)
+
+Images under **CC-BY** licence, source under **LGPL** licence.
+
+We started this project during **summer 2014**.
+
+On **June 4, 2016**, Apple authorized the external testing [using TestFlight](https://developer.apple.com/testflight/). We got a lot of great feedback and this enabled us to improve the game a lot.
+
+As of **August 13, 2016**, the App, [App Preview](https://developer.apple.com/app-store/app-previews/) and screenshots are almost ready. We still need to fix [some issues](issues).
+
+All source files are in **[Maze Escape](Maze%20Escape)**. This folder's [README](Maze%20Escape/README.md) contains more informations about the code.
+
 ![iOS icon](/Media.xcassets/AppIcon.appiconset/icon-01%403x.png?raw=true "Edgar The Explorer App Icon")
 
-Images under CC-BY licence, source under LGPL licence.
+Three great, much more advanced FOSS iPhone games we love:
 
-All assets are now online, except:
+* 2048 (MIT) https://github.com/gabrielecirulli/2048
 
-– JSTileMap, which you can find here: https://github.com/slycrel/JSTileMap
+* Dungeon Story (MIT) https://github.com/pdeligia/dungeonstory-ios
 
-– The Creative Commons music. You can find Juno by Chronox here: http://freemusicarchive.org/music/Chronox_2/Voyager/Chronox_-_03_-_Juno (CC-BY), which should be renamed Juno.mp3, and the End Game tune here: https://soundcloud.com/arandompersona/x-files-theme-8bit, which should be renamed EndGame.mp3. Both files go in a folder named "Sounds" in the project folder.
+* Puzzles (MIT) https://github.com/ghewgill/puzzles
 
-We are looking for other free/libre iOS games or game makers. Any help would be appreciated.
+We are looking for other free/libre iOS games or game makers. Any help is appreciated.
 
 Best
 

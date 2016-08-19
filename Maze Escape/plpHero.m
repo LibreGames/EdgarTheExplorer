@@ -23,11 +23,19 @@
 
 #import "plpHero.h"
 
+//´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
+//
+//  Our beloved main character Edgar {:-[-<
+//
+//................................................
+
 @implementation plpHero
 
 - (id)initAtPosition:(CGPoint)position{
-    edgarDeFace = [SKTexture textureWithImageNamed:@"edgarDeFace.png"];
-    self = [super initWithTexture:edgarDeFace];
+    
+    facingEdgar = [SKTexture textureWithImageNamed:@"Level_objects_img/facingEdgar.png"];
+    //facingEdgar = [SKTexture textureWithImageNamed:@"Level_objects_img/facingEdgar.png"];
+    self = [super initWithTexture:facingEdgar];
     
     if (self) {
         
@@ -39,7 +47,6 @@
         SKTextureAtlas *EdgarJumpAtlas = [SKTextureAtlas atlasNamed:@"edgarsaute"];
         NSMutableArray *jumpFrames = [NSMutableArray array];
 
-        //        int numImages = EdgarAnimatedAtlas.textureNames.count;
         for (int i=1; i <= 3; i++) {
             NSString *textureName = [NSString stringWithFormat:@"EdgarMarche%d", i];
             SKTexture *temp = [EdgarAnimatedAtlas textureNamed:textureName];
@@ -64,8 +71,8 @@
         self.position = position;
         
         
-        SKPhysicsBody *topCircleBody = [SKPhysicsBody bodyWithCircleOfRadius:20 center:CGPointMake(0, 12)]; // until March 18, 2016: center= (0, 18) // 0, 22
-        SKPhysicsBody *rectangleBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(28, 50) center:CGPointMake(0, 10)];
+        SKPhysicsBody *topCircleBody = [SKPhysicsBody bodyWithCircleOfRadius:18 center:CGPointMake(0, 12)]; // until March 18, 2016: center= (0, 18) // 0, 22
+        SKPhysicsBody *rectangleBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(28, 36) center:CGPointMake(0, -2)];
 
         topCircleBody.categoryBitMask = 1;
         rectangleBody.categoryBitMask = 1;
@@ -107,7 +114,7 @@
 }
 
 -(void)facingEdgar{
-    [self setTexture:edgarDeFace];
+    [self setTexture:facingEdgar];
 }
 
 -(void)jumpingEdgar
@@ -125,7 +132,7 @@
     
     if(!lightNode)
     {
-        // Lampe
+        // The light which produces shadow
         SKLightNode* lampe = [[SKLightNode alloc] init];
         lampe.name = @"light";
         lampe.zPosition = 20;
@@ -133,9 +140,9 @@
         lampe.falloff = 1;
         lampe.ambientColor = [UIColor whiteColor];
         lampe.lightColor = [[UIColor alloc] initWithRed:1.0 green:1.0 blue:0.0 alpha:0.5];
-    //    lampe.shadowColor = [[UIColor alloc] initWithRed:0.0 green:0.0 blue:0.0 alpha:0.8];
         lampe.shadowColor = [[UIColor alloc] initWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
         [self addChild:lampe];
+        NSLog(@"LightNode added");
     }
     else
     {
@@ -143,11 +150,29 @@
     }
 }
 
+-(void)removeLight
+{
+    SKNode *lightNode = [self childNodeWithName:@"light"];
+    if(lightNode)
+    {
+        [lightNode removeFromParent];
+        NSLog(@"Node removed");
+    }
+}
+
 -(void)addMasque
 {
-    SKSpriteNode *masque = [SKSpriteNode spriteNodeWithImageNamed:@"masque_120.png"];
+    SKSpriteNode *masque = [SKSpriteNode spriteNodeWithImageNamed:@"Level_objects_img/masque_120.png"];
+    masque.name = @"masque";
     masque.size=CGSizeMake(1200, 800);
     [self addChild: masque];
+    NSLog(@"Masque added");
+}
+-(void)removeMasque
+{
+    SKNode *masque = [self childNodeWithName:@"masque"];
+    [masque removeFromParent];
+    NSLog(@"Masque removed");
 }
 
 -(void)giveControl
@@ -169,29 +194,31 @@
     return boolHasControl;
 }
 -(void)takeDamage{
-    SKAction *aie2 = [SKAction sequence:@[
+    SKAction *ouch = [SKAction sequence:@[
       [SKAction colorizeWithColor:[SKColor redColor] colorBlendFactor:1.0 duration:0.15],
       [SKAction waitForDuration:0.1],
       [SKAction colorizeWithColorBlendFactor:0.0 duration:0.15]]];
-//    SKAction *aie = [SKAction sequence: @[[SKAction fadeAlphaTo:.5 duration: .2], [SKAction fadeAlphaTo:1 duration:.2], [SKAction waitForDuration:.5]]];
-    [self runAction: aie2];
-//    [self runAction: aie];
+    [self runAction: ouch];
 }
 -(void)getsInfected{
-    if(isInfected == TRUE)
-    {
-    }else{
+    if(isInfected == FALSE){
         [self removeControl];
         isInfected = TRUE;
         SKAction *getBlue = [SKAction sequence:@[
              [SKAction colorizeWithColor:[SKColor blueColor] colorBlendFactor:0.8 duration:0.15],
              [SKAction waitForDuration:.5],
              [SKAction colorizeWithColorBlendFactor:0.5 duration:0.15]]];
+        
+        int random_distance = 20 + rand() % 30;
+        float random_duration = 1.0f / (1.0f + rand() % 5);
+        
+        NSLog(@"Random: %d, %f, %d", random_distance, random_duration, rand() % 5);
+        
         SKAction *strangeMove = [SKAction sequence:@[
              [SKAction moveByX:10 y:0 duration:.1],
-             [SKAction moveByX:-40 y:0 duration:.5],
-             [SKAction moveByX:40 y:0 duration:.1]]];
-//        SKAction *wait = [SKAction waitForDuration:2];
+             [SKAction moveByX:-random_distance y:0 duration:random_duration],
+             [SKAction moveByX:random_distance+5 y:0 duration:.1]]];
+        
         SKAction *giveBackControl = [SKAction runBlock:^{
             [self giveControl];
             isInfected = FALSE;
@@ -200,9 +227,6 @@
         SKAction *getWhite = [SKAction colorizeWithColorBlendFactor:0.0 duration:0.3];
 
         [self runAction: [SKAction sequence:@[getBlue, strangeMove, getWhite, giveBackControl]]];
-
-//        [self runAction: [SKAction sequence:@[getBlue, strangeMove, wait, strangeMove, getWhite, giveBackControl]]];
-
     }
 }
 -(BOOL)alreadyInfected{
@@ -210,21 +234,16 @@
 }
 -(void)takeItem{
     hasUranium = TRUE;
-    
-/*    SKAction *getWhite = [SKAction sequence:@[
-          [SKAction colorizeWithColor:[SKColor whiteColor] colorBlendFactor:1.0 duration:0.3],
-          [SKAction waitForDuration:0.2],
-          [SKAction colorizeWithColorBlendFactor:0.0 duration:0.3]]];
-    [self runAction: getWhite];*/
 }
 -(void)resetItem{
     hasUranium = FALSE;
 }
+-(void)resetInfected{
+    isInfected = FALSE;
+}
+
 -(BOOL)hasItem{
     return hasUranium;
-}
--(void)crashes{
-    NSLog(@"protch");
 }
 
 @end

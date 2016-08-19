@@ -25,7 +25,7 @@
 
 @interface plpHero : SKSpriteNode
 {
-    SKTexture *edgarDeFace;
+    SKTexture *facingEdgar;
     NSArray *_EdgarWalkingFrames;
     NSArray *_EdgarJumpingFrames;
     @public SKSpriteNode *rectangleNode;
@@ -36,12 +36,14 @@
     BOOL hasUranium;
 }
 
-- (id)initAtPosition:(CGPoint)position;
+-(id)initAtPosition:(CGPoint)position;
 -(void)walkingEdgar;
 -(void)jumpingEdgar;
 -(void)facingEdgar;
 -(void)addLight;
+-(void)removeLight;
 -(void)addMasque;
+-(void)removeMasque;
 -(void)giveControl;
 -(void)removeControl;
 -(BOOL)hasControl;
@@ -50,7 +52,8 @@
 -(BOOL)alreadyInfected;
 -(void)takeItem;
 -(void)resetItem;
--(void)crashes;
+-(void)resetInfected;
 -(BOOL)hasItem;
-    
+
+
 @end

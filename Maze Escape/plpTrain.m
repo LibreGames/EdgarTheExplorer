@@ -24,6 +24,13 @@
 #import "plpTrain.h"
 #import "plpMyScene.h"
 
+//´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´
+//
+//  The train on which Edgar can jump.
+//
+//................................................
+
+
 @implementation plpTrain
 
 - (id)initAtPosition:(CGPoint)position withMainTexture:(NSString*)textureString andWheelTexture:(NSString*)wheelTextureString
@@ -32,35 +39,35 @@
     self = [super initWithTexture:mainTexture];
     
     SKPhysicsBody *mainBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(74, 5) center:CGPointMake(0, -2)];
-    SKPhysicsBody *parapet1 = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(4, 10) center:CGPointMake(36, 4)];
-    SKPhysicsBody *parapet2 = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(4, 10) center:CGPointMake(-36, 4)];
+    SKPhysicsBody *parapet1 = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(4, 6) center:CGPointMake(36, 4)];
+    SKPhysicsBody *parapet2 = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(4, 6) center:CGPointMake(-36, 4)];
     
     self.physicsBody = [SKPhysicsBody bodyWithBodies:@[mainBody, parapet1, parapet2]];
-
-    SKTexture *baseTexture = [SKTexture textureWithImageNamed:@"ChariotBase.png"];
+    
+    SKTexture *baseTexture = [SKTexture textureWithImageNamed:@"Level_objects_img/ChariotBase.png"];
     SKSpriteNode *base = [SKSpriteNode spriteNodeWithTexture:baseTexture];
     base.position = CGPointMake(0, -12);
     
     [self addChild: base];
     
-//    self.physicsBody = [SKPhysicsBody bodyWithTexture: mainTexture alphaThreshold: 0.5 size: CGSizeMake(74, 11)]; -> due to a SpriteKit bug, this doesn't work properly with collision detection. See: http://stackoverflow.com/questions/24228274/why-are-didbegincontact-called-multiple-times
-
+    //    self.physicsBody = [SKPhysicsBody bodyWithTexture: mainTexture alphaThreshold: 0.5 size: CGSizeMake(74, 11)]; -> due to a SpriteKit bug, this doesn't work properly with collision detection. See: http://stackoverflow.com/questions/24228274/why-are-didbegincontact-called-multiple-times
+    
     self.position = position;
     self.physicsBody.density = 5000;
     self.physicsBody.restitution = 0;
-
+    
     SKTexture *textureRoue = [SKTexture textureWithImageNamed:wheelTextureString];
     
     leftWheelNode = [SKSpriteNode spriteNodeWithTexture:textureRoue];
-    leftWheelNode.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:9 center:CGPointMake(0, 0)];
-    leftWheelNode.position = CGPointMake(-20, -18);
+    leftWheelNode.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:9.5 center:CGPointMake(0, 0)];
+    leftWheelNode.position = CGPointMake(-20, -19);
     leftWheelNode.physicsBody.density = 5000; // 500;
     leftWheelNode.physicsBody.restitution = 0;
     [self addChild: leftWheelNode];
     
     rightWheelNode = [SKSpriteNode spriteNodeWithTexture:textureRoue];
-    rightWheelNode.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:9 center:CGPointMake(0, 0)];
-    rightWheelNode.position = CGPointMake(20, -18);
+    rightWheelNode.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:9.5 center:CGPointMake(0, 0)];
+    rightWheelNode.position = CGPointMake(20, -19);
     rightWheelNode.physicsBody.density = 5000; // 500;
     rightWheelNode.physicsBody.restitution = 0;
     [self addChild: rightWheelNode];
@@ -82,10 +89,9 @@
     [self removeActionForKey:@"running"];
     isRunning = FALSE;
     SKAction *decelerate;
-
-    if (rightWheelNode.physicsBody.angularVelocity > 0)
+    
+    if (rightWheelNode.physicsBody.angularVelocity > 0) // positive speed -> the train runs left
     {
-        NSLog(@"vitesse positive -> le train roule vers la gauche");
         decelerate = [SKAction runBlock:^{
             float newSpeed = rightWheelNode.physicsBody.angularVelocity - deceleration;
             if(newSpeed < 0){
@@ -95,12 +101,11 @@
             [rightWheelNode.physicsBody setAngularVelocity:newSpeed];
             [leftWheelNode.physicsBody setAngularVelocity:newSpeed];
         }];
-
-    }else{
-        NSLog(@"vitesse négative -> roule vers la droite");
+        
+    }else{ // 0 or negative speed -> the train runs right
         decelerate = [SKAction runBlock:^{
             float newSpeed = rightWheelNode.physicsBody.angularVelocity + deceleration;
-//            NSLog(@"newSpeed = %f", newSpeed);
+            //            NSLog(@"newSpeed = %f", newSpeed);
             if(newSpeed > 0){
                 newSpeed = 0;
             }
@@ -113,54 +118,47 @@
     [self runAction:[SKAction sequence:@[[SKAction waitForDuration:2], theBraking]] withKey:@"braking"];
 }
 
-- (void)accelerateAtRate:(float)acceleration toMaxSpeed:(float)maxSpeed invertDirection:(BOOL)moveLeft
+- (void)accelerateAtRate:(float)acceleration toMaxSpeed:(float)maxSpeed
 {
     [self removeActionForKey:@"braking"];
-
-    if(1==1)
+    
+    SKAction *accelerate;
+    if([self getVelocityX] < 0) // if the train already runs left
     {
-        SKAction *accelerate;
-        NSLog(@"Self Velocity x: %f", [self getVelocityX]);
-              
-//      if(moveLeft == FALSE) -> now we use getVelocityX instead
-        
-        if([self getVelocityX] < 0) // if the train already runs left
-        {
-            accelerate = [SKAction runBlock:^{
-                float newSpeed = rightWheelNode.physicsBody.angularVelocity + acceleration;
-                if(newSpeed > maxSpeed){ // Speed limit / limite de vitesse
-                    newSpeed = maxSpeed;
-                }
-                [rightWheelNode.physicsBody setAngularVelocity:newSpeed];
-                [leftWheelNode.physicsBody setAngularVelocity:newSpeed];
-                
-                if(heroAbove){
-                    contextVelocityX = self.physicsBody.velocity.dx;
-                }
-
-            }];
-        }
-        else
-        {
-            accelerate = [SKAction runBlock:^{
-                float newSpeed = rightWheelNode.physicsBody.angularVelocity - acceleration;
-                if(newSpeed < - maxSpeed){ // Speed limit / limite de vitesse
-                    newSpeed = - maxSpeed;
-                }
-                [rightWheelNode.physicsBody setAngularVelocity:newSpeed];
-                [leftWheelNode.physicsBody setAngularVelocity:newSpeed];
-                if(heroAbove){
-                    contextVelocityX = self.physicsBody.velocity.dx;
-                }
-            }];
-        }
-        
-
-        SKAction *theMove = [SKAction repeatActionForever:[SKAction sequence:@[[SKAction waitForDuration:.1], accelerate]]];
-
-        [self runAction: theMove withKey:@"running"];
-        isRunning = TRUE;
+        accelerate = [SKAction runBlock:^{
+            float newSpeed = rightWheelNode.physicsBody.angularVelocity + acceleration;
+            if(newSpeed > maxSpeed){ // Speed limit / limite de vitesse
+                newSpeed = maxSpeed;
+            }
+            [rightWheelNode.physicsBody setAngularVelocity:newSpeed];
+            [leftWheelNode.physicsBody setAngularVelocity:newSpeed];
+            
+            if(heroAbove){
+                contextVelocityX = self.physicsBody.velocity.dx;
+            }
+            
+        }];
     }
+    else
+    {
+        accelerate = [SKAction runBlock:^{
+            float newSpeed = rightWheelNode.physicsBody.angularVelocity - acceleration;
+            if(newSpeed < - maxSpeed){ // Speed limit / limite de vitesse
+                newSpeed = - maxSpeed;
+            }
+            [rightWheelNode.physicsBody setAngularVelocity:newSpeed];
+            [leftWheelNode.physicsBody setAngularVelocity:newSpeed];
+            if(heroAbove){
+                contextVelocityX = self.physicsBody.velocity.dx;
+            }
+        }];
+    }
+    
+    
+    SKAction *theMove = [SKAction repeatActionForever:[SKAction sequence:@[[SKAction waitForDuration:.1], accelerate]]];
+    
+    [self runAction: theMove withKey:@"running"];
+    isRunning = TRUE;
 }
 
 - (float) getVelocityX

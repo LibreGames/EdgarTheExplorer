@@ -24,7 +24,12 @@
 #import <SpriteKit/SpriteKit.h>
 
 @interface plpItem : SKSpriteNode
+{
+    int secondsBonus;
+}
 
-- (id)initAtPosition:(CGPoint)position withTexture:(NSString*)textureString;
+- (id)initAtPosition:(CGPoint)position withTexture:(NSString*)textureString andRadius:(int) radius;
+- (void) setSeconds: (int) theSeconds;
+- (int) getSeconds;
 
 @end

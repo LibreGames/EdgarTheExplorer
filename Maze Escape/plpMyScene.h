@@ -24,67 +24,74 @@
 #import <SpriteKit/SpriteKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import "JSTileMap.h"
-//#import "plpDelegate.h"
 #import "plpHero.h"
 #import "plpEnemy.h"
 #import "plpTrain.h"
 #import "plpPlatform.h"
 #import "plpItem.h"
 
-#define MAXNUMBEROFDEATHS 10
-
-#define SUICIDE_DEATH 0
-#define CRASH_DEATH 1
-#define FALLEN_DEATH 2
-#define ALIEN_DEATH 3
-#define HAMMER_DEATH 4
 #define LAST_LEVEL_INDEX 6
 #define USE_ALTERNATE_CONTROLS 0
+#define DEFAULT_EDGAR_VELOCITY 150
 
 float contextVelocityX;
 
 @interface plpMyScene : SKScene <SKPhysicsContactDelegate>
 {
+    // Objects
     plpHero *Edgar;
     SKPhysicsBody *EdgarCircleBody;
     JSTileMap *myLevel;
     SKNode *myWorld;
     SKCameraNode *myCamera;
+    SKSpriteNode *myFinishRectangle;
+    
+    // Physics
     BOOL freeCamera;
+    BOOL willLoseContextVelocity;
+    float EdgarVelocity;
+    CGPoint startPosition;
+    
+    // Character actions:
+    SKAction *moveLeftAction;
+    SKAction *moveRightAction;
+    SKAction *moveUp;
+    
+    // Input
+    CGPoint touchStartPosition;
     BOOL waitForTap;
+    BOOL isJumping;
+    BOOL ignoreNextTap;
     BOOL moveLeftRequested;
     BOOL moveRightRequested;
     BOOL moveUpRequested;
+    BOOL bigJumpRequested;
     BOOL stopRequested;
     BOOL gonnaCrash;
-    BOOL moveLeft;
-    BOOL moveRight;
-    BOOL willLoseContextVelocity;
+    BOOL movingLeft;
+    BOOL movingRight;
     BOOL listensToContactEvents;
-    int deathCount;
-    int globalCounter;
-    float EdgarVelocity;
-    CGPoint startPosition;
-    SKSpriteNode *myFinishRectangle;
-    int nextLevelIndex;
-    SKAction *bougeDroite;
-    SKAction *bougeGauche;
-    SKAction *bougeGauche2;
-    SKAction *bougeDroite2;
-    SKAction *moveUp;
-    SKAction *stoppe;
-    CGPoint touchStartPosition;
+    BOOL levelTransitioning;
+    
+    // User interface
     UIView *containerView;
     UITextView *myTextView;
-    BOOL isJumping;
-    BOOL ignoreNextTap;
+    BOOL runningOniPad;
+    float screenCenterX;
+    
+    // Game data
+    int deathCount;
+    int globalCounter;
+    int nextLevelIndex;
     double initialTime;
-    double initialLevelTime;
     double additionalSavedTime;
+    double additionalLevelTime;
+    BOOL cheatsEnabled;
 }
 
 -(void)loadAssets:(JSTileMap*) tileMap;
 -(void)addStoneBlocks:(JSTileMap*) tileMap;
+-(void)resetGameData;
 -(void)EdgarDiesOf:(int)deathType;
 -(void)resetEdgar;
 -(void)getsPaused;
@@ -93,12 +100,11 @@ float contextVelocityX;
 -(int)getNextLevelIndex;
 -(void)saveHighScoreForUser:(NSString*)userName;
 -(void)saveInitialTime;
+-(void)saveAdditionalTime:(float)additionalTime;
 -(void)saveAdditionalTime;
--(void)playTune:(NSString*)filename;
+-(void)playTune:(NSString*)filename loops:(int)loops;
+-(void)computeSceneCenter;
 
 @property (strong, nonatomic) AVAudioPlayer *audioPlayer;
-@property (strong, nonatomic) SKAction *hopSound;
-@property (strong, nonatomic) SKAction *sgroSound;
-//@property (nonatomic) float contextVelocityX;
 
 @end

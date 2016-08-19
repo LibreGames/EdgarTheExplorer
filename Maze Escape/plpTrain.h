@@ -33,10 +33,9 @@
 - (id)initAtPosition:(CGPoint)position withMainTexture:(NSString*)textureString andWheelTexture:(NSString*)wheelTextureString;
 - (SKSpriteNode*)getLeftWheel;
 - (SKSpriteNode*)getRightWheel;
-- (void)accelerateAtRate:(float)acceleration toMaxSpeed:(float)maxSpeed invertDirection:(BOOL)moveLeft;
+- (void)accelerateAtRate:(float)acceleration toMaxSpeed:(float)maxSpeed;
 - (void)decelerateAtRate:(float)deceleration;
 - (void) setHeroAbove;
 - (void) HeroWentAway;
 - (float) getVelocityX;
-//- (void)moveToSpeed:(float)maxSpeed;
 @end

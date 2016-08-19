@@ -25,11 +25,19 @@
 
 @interface plpPlatform : SKSpriteNode
 {
+    BOOL isVertical;
     BOOL movingLeft;
     BOOL firstMovement;
+    BOOL emergencyStopTriggered;
+    float motionSpeed;
     BOOL heroAbove;
+    BOOL noEmergencyStop;
     float initXPosition;
     float initYPosition;
+    float endXPosition; // added for the new movement model (June 1, 2016)
+    float endYPosition;
+    float movementDuration;
+    SKAction *standardSequence;
 }
 
 - (id)initAtPosition:(CGPoint)position withSize:(CGSize)size withDuration:(float)duration upToX:(float)x_limit andY:(float)y_limit andIdleDuration:(float)idleDuration;
@@ -39,9 +47,12 @@
 - (id)initAtPosition:(CGPoint)position withSize:(CGSize)size withDuration:(float)duration withMovement:(float)movement;
 
 - (float) getVelocityX;
-
 - (void) setHeroAbove;
 - (void) HeroWentAway;
+- (BOOL) getIsVertical;
+- (void) setNoEmergencyStop;
+- (void) emergencyStop;
+- (void) horizontalEmergencyStop: (float) EdgarXPosition;
 
 
 @end
